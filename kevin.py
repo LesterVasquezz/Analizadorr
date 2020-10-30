@@ -6,31 +6,33 @@ fuente = open("shadow", "r")
 salida = open("salida.txt", "w")
 
 data = fuente.read()
-fechas = set(data.split('\n'))
 
 # lista de tokens
 tokens = (
-    'SIGNO_PESO',#signo de $
-    'NUM',#digito
+    'SALT',
     'HASH',#hash completo
     'EXTRA'#es lo que hay despues del $, alfanumerico
 )
 
 # Regular expression rules for simple tokens
-t_SIGNO_PESO = r'\$'
-NUM = r'\d+'
-EXTRA=r'[A-Z,a-z,0-9,/,.,:]*' #se uso cerradura de Kleene
+EXTRA=r'[A-Z,a-z,0-9,/,.]*' #se uso cerradura de Kleene
 
-HASH = t_SIGNO_PESO+NUM+t_SIGNO_PESO+EXTRA+t_SIGNO_PESO+EXTRA #combinacion $numero$caracteres alfanumericos
+SALT=r'\$'+r'\d+'+r'\$'+EXTRA
+HASH=r'\$'+EXTRA
+
 
 #Definimos hash como token
-@TOKEN(HASH)
-def t_HASH(t):
+@TOKEN(SALT)
+def t_SALT(t):
     t.value = str(t.value)
     return t
-
+@TOKEN(HASH)
+def t_HASH(t):
+    t.value = str(t.value[1:])
+    return t
 # Ignorar el salto de linea
 t_ignore = ' \n'
+
 
 
 #QUE HACE EN CASO DE ERROR, EN ESTE CASO SE SALTA 1 CARACTER
