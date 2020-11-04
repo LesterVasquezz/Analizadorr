@@ -1,4 +1,4 @@
 # Analizador
 Es necesario tener instalado las siguientes librerias
-*Ply
-*re 
+1.Ply
+2.re 
